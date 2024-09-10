@@ -19,15 +19,7 @@ const ClassModal = ({ open, onCancel }: Props) => {
   const handleOk = () => {
     onCancel();
   };
-  const listClass = useSelector(getSubjectClass).listClass;
-
-  const onchange = (value: string) => {
-    const check = listClass.find((item) => item.class === Number(value));
-    check
-      ? (setValue(""), alert(`Lớp ${value} đã tồn tại`))
-      : value.length <= 1 && setValue(value);
-  };
-
+  
   const handleAddClass = () => {
     value.length <= 0 ? alert("Vui lòng nhập lớp học") : addClass();
   };
@@ -71,7 +63,7 @@ const ClassModal = ({ open, onCancel }: Props) => {
               value={value}
               placeholder="Nhập lớp ...."
               maxLength={1}
-              onChange={(e) => onchange(e.target.value)}
+              onChange={(e) => setValue(e.target.value) }
               className="w-full h-full outline-none p-4 text-black "
             />
           </div>

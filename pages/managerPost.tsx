@@ -17,7 +17,6 @@ const managerPost = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="p-4 mb-2">
-        <span>subenbulen</span>
         <div
           className="w-full m-auto border rounded-lg bg-white 
         h-[calc(100vh-60px)] flex"

@@ -1,5 +1,5 @@
 export const configs = {
-    baseURL: "http://10.50.5.222"
+    baseURL: "http://127.0.0.1:8000"
 }
 
 export const GIFJSON = {

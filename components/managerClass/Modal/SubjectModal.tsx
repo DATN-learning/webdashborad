@@ -46,11 +46,11 @@ const SubjectModal = ({ open, onCancel }: Props) => {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dataSubject = `${day}${month}${year}`;
-    const id_subject = `mon-${nameSubject}-${classRoom}-${nameSubject}`;
+    const id_subject = `${dataSubject}-${classRoom}-${nameSubject}`;
     const class_room_id = idClass;
     const name_subject = nameSubject;
     const logo_image = file;
-    const slug = `mon-${classRoom}-${dataSubject}-${date.getHours}-'youcdi `;
+    const slug = `${dataSubject}-${classRoom}-${nameSubject}`;
     try {
       const res = await addSubjectApi(
         id_subject,
