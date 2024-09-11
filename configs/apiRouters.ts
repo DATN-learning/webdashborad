@@ -6,6 +6,8 @@ export const apiRoutes = {
   getChapterSubject: "/api/classroom/getChapterSubject",
   addClass: "/api/classroom",
   addSubject:"/api/classroom/createSubject",
+  deleteSubject: "/api/classroom/deleteSubject",
+  updateSubject: "/api/classroom/updateSubject",
   addChapter: "/api/classroom/createChapter",
   addLession: "/api/classroom/createLession",
   editChapterByID: "/api/classroom/editChapterByID",

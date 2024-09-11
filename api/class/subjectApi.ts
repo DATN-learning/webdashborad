@@ -2,7 +2,7 @@ import axiosClient from "@/libs/api/axiosClient";
 import { apiRoutes } from "@/configs/apiRouters";
 import axiosClientFile from "@/libs/api/axiosClientFile";
 import { IChapterSubjectSuccessPayload } from "@/interface/Chapter";
-import { ICreateClassPayload, ICreateSubjectPayload } from "@/interface/Class";
+import { ICreateClassPayload, ICreateSubjectPayload, ISubjectSuccessPayload } from "@/interface/Class";
 
 export const getChapterSubject = async (subject_id: string): Promise<any> => {
   try {
@@ -72,4 +72,26 @@ export const addSubjectOfChapter = async (
   } catch (error) {
     return error;
   }
+};
+
+export const deleteSubject = async (id_subject: string) => {
+  try {
+    const data = {id_subject} ;
+    const response = await axiosClient.post<ICreateClassPayload>(apiRoutes.deleteSubject,data);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateSubjectApi = async (  id_subject: string,
+  name_subject: string,
+  logo_image: any,
+) => {
+  const formData = new FormData();
+  formData.append("id_subject", id_subject);
+  formData.append("name_subject", name_subject);
+  formData.append("logo_image", logo_image);
+  const response = await axiosClientFile.post<ISubjectSuccessPayload>(apiRoutes.updateSubject, formData);
+  return response;
 };
