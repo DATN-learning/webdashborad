@@ -6,6 +6,15 @@ export interface IClassSuccessPayload {
     };
   }
 
+
+export interface ISubjectSuccessPayload {
+    status: boolean;
+    message: string;
+    data: {
+      class: ISubject[];
+    };
+  }
+
 export interface ICreateClassPayload {
   status: boolean;
   message: string;
@@ -34,4 +43,6 @@ export interface ICreateLessionPayload extends ICreateClassPayload {}
     created_at: string;
     updated_at: string;
   }
+
+
   
