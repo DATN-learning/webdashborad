@@ -1,10 +1,10 @@
 import { ISubject } from "@/interface/Class";
 import { getSubjectClass } from "@/redux/classRoom/selectors";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { chooseSubject, getSubjectClassRoomRequest } from "@/redux/classRoom/actions";
-import { BiDotsVerticalRounded, BiPlus } from "react-icons/bi";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { deleteSubject, updateSubjectApi } from "@/api/class/subjectApi";
@@ -19,11 +19,13 @@ const ListSubject = ({ options }: ListSubjectProps) => {
   const [listSubject, setListSubject] = React.useState<ISubject[]>([]);
   const listClass = useSelector(getSubjectClass);
   const [activeDropdown, setActiveDropdown] = React.useState<number | null>(null);
-  const [selectedSubject, setSelectedSubject] = React.useState<ISubject | null>(null);  // Thay đổi thành ISubject
+  const [selectedSubject, setSelectedSubject] = React.useState<ISubject | null>(null);
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [nameSubject, setNameSubject] = React.useState("");
   const [logoImage, setLogoImage] = React.useState<File | null>(null);
-  const [logoImageUrl, setLogoImageUrl] = React.useState<string>(""); 
+  const [logoImageUrl, setLogoImageUrl] = React.useState<string>("");
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const setUpData = async () => {
     const classRoom = await listClass.listClass.find(
@@ -58,7 +60,7 @@ const ListSubject = ({ options }: ListSubjectProps) => {
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setUpData();
   }, [listClass.numberClassRoom]);
 
@@ -83,9 +85,8 @@ const ListSubject = ({ options }: ListSubjectProps) => {
   const handleEditSubject = (subject: ISubject) => {
     setSelectedSubject(subject);
     setNameSubject(subject.name_subject);
-    setLogoImageUrl(subject.logo_image); 
+    setLogoImageUrl(subject.logo_image);
     setShowEditModal(true);
-    console.log(subject.id_subject)
   };
 
   const handleDeleteSubject = async (id_subject: string) => {
@@ -116,9 +117,9 @@ const ListSubject = ({ options }: ListSubjectProps) => {
     }
   };
 
-  const handleUpdate = async () => {  
-    try{
-      const res = await updateSubjectApi(selectedSubject?.id_subject as string,nameSubject ,logoImage);
+  const handleUpdate = async () => {
+    try {
+      const res = await updateSubjectApi(selectedSubject?.id_subject as string, nameSubject, logoImage);
       if (res.status === 200) {
         if (res.data.status) {
           toast.success("Sửa môn học thành công");
@@ -128,10 +129,24 @@ const ListSubject = ({ options }: ListSubjectProps) => {
           toast.error("Sửa môn học thất bại");
         }
       }
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null); 
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div>
@@ -158,15 +173,15 @@ const ListSubject = ({ options }: ListSubjectProps) => {
                 </div>
 
                 {activeDropdown === index && (
-                  <div className="absolute top-8 right-2 bg-white border border-gray-300 rounded shadow-lg z-10">
+                  <div ref={dropdownRef} className="absolute top-8 right-2 bg-white border border-gray-300 rounded shadow-lg z-10">
                     <button
-                      className="px-4 py-2 text-left w-full font-bold text-md xl:text-xl hover:bg-gray-100"
+                      className="px-4 py-2 text-left w-full font-bold text-lg hover:bg-gray-100"
                       onClick={() => handleEditSubject(item)}
                     >
                       Sửa môn học
                     </button>
                     <button
-                      className="px-4 py-2 text-left w-full font-bold text-md xl:text-xl hover:bg-gray-100"
+                      className="px-4 py-2 text-left w-full font-bold text-lg hover:bg-gray-100"
                       onClick={() => handleDeleteSubject(item.id_subject)}
                     >
                       Xóa môn học
@@ -178,8 +193,8 @@ const ListSubject = ({ options }: ListSubjectProps) => {
           </div>
 
           {showEditModal && selectedSubject && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-lg w-[400px] relative">
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" onClick={() => setShowEditModal(false)}>
+              <div className="bg-white p-6 rounded-lg w-[400px] relative" onClick={(e) => e.stopPropagation()}>
                 <div
                   className="absolute top-2 right-2 cursor-pointer"
                   onClick={() => setShowEditModal(false)}
@@ -192,7 +207,7 @@ const ListSubject = ({ options }: ListSubjectProps) => {
                   <input
                     type="text"
                     className="w-full border rounded-lg p-2"
-                    value={nameSubject} 
+                    value={nameSubject}
                     onChange={(e) => setNameSubject(e.target.value)}
                   />
                 </div>

@@ -10,6 +10,8 @@ export const apiRoutes = {
   updateSubject: "/api/classroom/updateSubject",
   addChapter: "/api/classroom/createChapter",
   addLession: "/api/classroom/createLession",
+  deleteLession: "/api/classroom/deleteLession",
+  updateLession: "/api/classroom/updateLession",
   editChapterByID: "/api/classroom/editChapterByID",
   deleteChapterByID: "/api/classroom/deleteChapterByID",
   getQuestionByIDQR: "/api/question/getQuestionByIDQR",

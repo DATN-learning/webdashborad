@@ -2,6 +2,7 @@ import { apiRoutes } from "@/configs/apiRouters";
 import {
   ICreateChapterPayload,
   ICreateLessionPayload,
+  ILessionPayLoad,
   IUpdateChapterPayload,
 } from "@/interface/Class";
 import { IQuestionSuccessPayload } from "@/interface/Question";
@@ -90,6 +91,41 @@ export const addLesson = async (
     data
   );
   return response;
+};
+
+
+export const deleteLess = async (id_lesstion_chapter: string) => {
+  try {
+    const data = {id_lesstion_chapter} ;
+    const response = await axiosClient.post<ICreateLessionPayload>(apiRoutes.deleteLession,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateLess = async (
+  id_lesstion_chapter: string,
+  name_lesstion_chapter: string,
+  description_lesstion_chapter: string,
+  number_lesstion_chapter: string
+) => {
+  const formData = new FormData();
+  formData.append("id_lesstion_chapter", id_lesstion_chapter);
+  formData.append("name_lesstion_chapter", name_lesstion_chapter);
+  formData.append("description_lesstion_chapter", description_lesstion_chapter);
+  formData.append("number_lesstion_chapter", number_lesstion_chapter);
+
+  try {
+    const response = await axiosClient.post<IUpdateChapterPayload>(
+      apiRoutes.updateLession,
+      formData
+    );
+    return response;
+  } catch (error) {
+    console.error("Error updating lesson:", error);
+    throw error;
+  }
 };
 
 export const getQuestionByID = async (id_question_query: string) => {
