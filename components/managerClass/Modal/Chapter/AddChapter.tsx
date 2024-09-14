@@ -49,12 +49,12 @@ const AddChapter = ({
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dateChapter = `${day}${month}${year}`;
+    const number_chapter = value;
     const id_chapter_subject =
-      "chapter-" + dateChapter + classRoom + "-" + value;
+      "chapter-" + dateChapter+ "-" + classRoom + "-" + value;
     const subject_id = idSubject;
     const name_chapter_subject = nameChapter;
     const chapter_image = file;
-    const number_chapter = value;
     try {
       const res = await addChapter(
         id_chapter_subject,

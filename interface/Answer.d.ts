@@ -5,5 +5,5 @@ export interface IAnswerPayLoad{
     answer_text : string;
     created_at : string;
     updated_at : string;
-    imageAnswers:String[];
+    imageAnswers:string[];
 }

@@ -1,17 +1,22 @@
 import React from "react";
 import { Alert, Modal, Radio } from "antd";
 import { toast } from "react-toastify";
+import { addQuestion } from "@/api/chapter";
+import { useSelector } from "react-redux";
+import { chooseClassRoom, getChooseSubject } from "@/redux/classRoom/selectors";
+import { IChapterSubject } from "@/interface/Chapter";
 
 interface IPopupQuestion {
   open: boolean;
   close: () => void;
+  chooseChapter: IChapterSubject | undefined;
 }
 interface IAnswers {
   answer: string;
   image: string;
 }
 
-const PopupQuestion = ({ open, close }: IPopupQuestion) => {
+const PopupQuestion = ({ open, close,chooseChapter }: IPopupQuestion) => {
   const [imageAnswer, setImageAnswer] = React.useState<string>("");
   const [imageQuestion, setImageQuestion] = React.useState<string>("");
   const [answers, setAnswers] = React.useState<IAnswers[]>([]);
@@ -21,6 +26,7 @@ const PopupQuestion = ({ open, close }: IPopupQuestion) => {
   const [level, setLevel] = React.useState<string>("");
   const [question, setQuestion] = React.useState<string>("");
   const [answerCorrect, setAnswerCorrect] = React.useState<string>("");
+  const classRoom = useSelector(chooseClassRoom);
   const handleFileImageQuestion = (e: any) => {
     const type = e.target.files[0].type;
     if (type === "image/png" || type === "image/jpeg" || type === "image/jpg") {
@@ -50,7 +56,7 @@ const PopupQuestion = ({ open, close }: IPopupQuestion) => {
 
   const handleAddAnswer = () => {
     if (answer.trim() === "") return;
-    const newAnswer = {
+    const newAnswer: IAnswers = {
       answer: answer,
       image: imageAnswer,
     };
@@ -59,16 +65,8 @@ const PopupQuestion = ({ open, close }: IPopupQuestion) => {
     setImageAnswer("");
   };
 
-  const handleAddQuestion = () => {
-    const newQuestion = {
-      title,
-      description,
-      level,
-      question,
-      answers,
-      answerCorrect,
-      imageQuestion,
-    };
+  const handleAddQuestion = async () => {
+    // Kiểm tra các trường thông tin đã được nhập đầy đủ
     if (
       title === "" ||
       description === "" ||
@@ -76,12 +74,62 @@ const PopupQuestion = ({ open, close }: IPopupQuestion) => {
       question === "" ||
       answers.length === 0 ||
       answerCorrect === ""
-    ){
+    ) {
       toast.error("Vui lòng nhập đầy đủ thông tin");
       return;
     }
-      console.log(newQuestion);
+
+    // Generate date and construct id_chapter_subject and id_question_query
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const dateChapter = `${day}${month}${year}`;
+    const id_question = `chapter-${dateChapter}-${classRoom}-${question}`;
+    const id_question_query =`chapter-${dateChapter}-${classRoom}-${chooseChapter?.number_chapter}`; 
+    const formattedAnswers = answers.map((item, index) => ({
+      id_answer: `_${index}`, // Tạo id_answer theo chỉ số
+      answer_text: item.answer, // Văn bản câu trả lời
+    }));
+
+    const answer_correct = formattedAnswers[parseInt(answerCorrect)].id_answer;
+    
+    // Chuẩn bị dữ liệu để gửi
+    const newQuestion = {
+      id_question,
+      id_question_query,
+      title,
+      description,
+      answer_correct,
+      level_question: level,
+      number_question: parseInt(question),
+      answers:formattedAnswers,
+      imageQuestion: imageQuestion,
+    };
+
+    // Gọi API thêm câu hỏi
+    try {
+      const response = await addQuestion(
+        newQuestion.id_question,
+        newQuestion.id_question_query,
+        newQuestion.title,
+        newQuestion.description,
+        newQuestion.answer_correct,
+        newQuestion.level_question,
+        newQuestion.number_question,
+        newQuestion.answers,
+        imageQuestion as any // truyền tệp ảnh của câu hỏi nếu có
+      );
+
+      toast.success("Thêm câu hỏi thành công!");
+      console.log("API Response:", response);
+      close(); // Đóng popup sau khi thêm thành công
+    } catch (error) {
+      console.error("Lỗi khi thêm câu hỏi:", error);
+      toast.error("Thêm câu hỏi thất bại!");
+    }
   };
+
   return (
     <Modal
       width={1000}

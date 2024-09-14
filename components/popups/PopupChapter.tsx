@@ -30,7 +30,6 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
   const [listQuestion, setListQuestion] = React.useState<IQuestionPayLoad[]>(
     []
   );
-  console.log("listQuestion", listQuestion);
   const [isLoadingQuestion, setIsLoadingQuestion] =
     React.useState<boolean>(false);
   const dispatch = useDispatch();
@@ -195,6 +194,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
       <PopupQuestion
         open={showPopupQuestion}
         close={() => setShowPopupQuestion(false)}
+        chooseChapter = {chooseChapter}
       />
     </Modal>
   );
