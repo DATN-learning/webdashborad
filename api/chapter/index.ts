@@ -2,6 +2,7 @@ import { apiRoutes } from "@/configs/apiRouters";
 import {
   ICreateChapterPayload,
   ICreateLessionPayload,
+  ILessionPayLoad,
   IUpdateChapterPayload,
 } from "@/interface/Class";
 import { IQuestionSuccessPayload } from "@/interface/Question";
@@ -92,6 +93,41 @@ export const addLesson = async (
   return response;
 };
 
+
+export const deleteLess = async (id_lesstion_chapter: string) => {
+  try {
+    const data = {id_lesstion_chapter} ;
+    const response = await axiosClient.post<ICreateLessionPayload>(apiRoutes.deleteLession,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateLess = async (
+  id_lesstion_chapter: string,
+  name_lesstion_chapter: string,
+  description_lesstion_chapter: string,
+  number_lesstion_chapter: string
+) => {
+  const formData = new FormData();
+  formData.append("id_lesstion_chapter", id_lesstion_chapter);
+  formData.append("name_lesstion_chapter", name_lesstion_chapter);
+  formData.append("description_lesstion_chapter", description_lesstion_chapter);
+  formData.append("number_lesstion_chapter", number_lesstion_chapter);
+
+  try {
+    const response = await axiosClient.post<IUpdateChapterPayload>(
+      apiRoutes.updateLession,
+      formData
+    );
+    return response;
+  } catch (error) {
+    console.error("Error updating lesson:", error);
+    throw error;
+  }
+};
+
 export const getQuestionByID = async (id_question_query: string) => {
   const data = {
     id_question_query,
@@ -102,3 +138,101 @@ export const getQuestionByID = async (id_question_query: string) => {
   );
   return response;
 };
+
+export const addQuestion = async (
+  id_question: string,
+  id_question_query: string,
+  title: string,
+  description: string,
+  answer_correct: string,
+  level_question: string,
+  number_question: number,
+  answers: { id_answer: string, answer_text: string }[], 
+  image_question?: any
+) => {
+  try {
+    const formData = new FormData();
+    formData.append("id_question", id_question);
+    formData.append("id_question_query", id_question_query);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("answer_correct", answer_correct);
+    formData.append("level_question", level_question);
+    formData.append("number_question", number_question.toString());
+    formData.append("slug", id_question);
+
+    if (image_question) {
+      formData.append("image_question", image_question);
+    }
+
+    answers.forEach((answer, index) => {
+      formData.append(`answers[${index}][id_answer]`, answer.id_answer);
+      formData.append(`answers[${index}][answer_text]`, answer.answer_text);
+    });
+
+    const response = await axiosClient.post<IQuestionSuccessPayload>(
+      apiRoutes.addQuestion,
+      formData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error adding question:", error);
+    throw error;
+  }
+}
+
+export const updateQuestion = async (
+  id_question: string,
+  id_question_query: string,
+  title: string,
+  description: string,
+  answer_correct: string,
+  level_question: string,
+  number_question: number,
+  answers: { id_answer: string; answer_text: string }[],
+  image_question?: File 
+) => {
+  try {
+    const formData = new FormData();
+    formData.append("id_question", id_question);
+    formData.append("id_question_query", id_question_query);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("answer_correct", answer_correct);
+    formData.append("level_question", level_question);
+    formData.append("number_question", number_question.toString());
+    formData.append("slug", id_question);
+
+    if (image_question) {
+      formData.append("image_question", image_question);
+    }
+
+    answers.forEach((answer, index) => {
+      formData.append(`answers[${index}][id_answer]`, answer.id_answer);
+      formData.append(`answers[${index}][answer_text]`, answer.answer_text);
+    });
+
+    const response = await axiosClient.post<IQuestionSuccessPayload>(
+      apiRoutes.updateQuestion,
+      formData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating question:", error);
+    throw error;
+  }
+};
+
+
+export const deleteQuestion = async (id_question: string) => {
+  try {
+    const data = {id_question} ;
+    const response = await axiosClient.post<IQuestionSuccessPayload>(apiRoutes.deleteQuestion,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+

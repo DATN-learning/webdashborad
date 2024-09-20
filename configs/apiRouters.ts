@@ -3,17 +3,24 @@ export const apiRoutes = {
   authLogout: "/api/auth/logout",
   loginByToken: "/api/auth/checktoken",
   getClassRoom: "/api/classroom",
-  getChapterSubject: "/api/classroom/getChapterSubject",
   addClass: "/api/classroom",
+
+  getChapterSubject: "/api/classroom/getChapterSubject",
   addSubject:"/api/classroom/createSubject",
   deleteSubject: "/api/classroom/deleteSubject",
   updateSubject: "/api/classroom/updateSubject",
+
   addChapter: "/api/classroom/createChapter",
   addLession: "/api/classroom/createLession",
+  deleteLession: "/api/classroom/deleteLession",
+  updateLession: "/api/classroom/updateLession",
   editChapterByID: "/api/classroom/editChapterByID",
   deleteChapterByID: "/api/classroom/deleteChapterByID",
+  
   getQuestionByIDQR: "/api/question/getQuestionByIDQR",
-
+  addQuestion: "api/question/createQuestion",
+  updateQuestion: "api/question/updateQuestion",
+  deleteQuestion :"api/question/deleteQuestion",
 
   // post request
   getPost : "/api/manapost/getPostQuestion",

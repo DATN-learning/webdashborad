@@ -89,7 +89,7 @@ const Chapter: React.FC<Props> = ({ dataChapter }) => {
                   {child.name_lesstion_chapter}
                 </div>
               ) as any,
-              key: child.id,
+              // key: child.id,
             };
           }) || []),
         ],

@@ -1,3 +1,5 @@
+import { ILessionByChapterPayLoad } from "./Chapter";
+
 export interface IClassSuccessPayload {
     status: boolean;
     message: string;
@@ -18,6 +20,15 @@ export interface ISubjectSuccessPayload {
 export interface ICreateClassPayload {
   status: boolean;
   message: string;
+}
+
+
+export interface ILessionPayLoad {
+  status: boolean;
+  message: string;
+  data: {
+    class: ILessionByChapterPayLoad[];
+  }
 }
 export interface ICreateSubjectPayload extends ICreateClassPayload {}
 export interface ICreateChapterPayload extends ICreateClassPayload {}

@@ -30,7 +30,6 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
   const [listQuestion, setListQuestion] = React.useState<IQuestionPayLoad[]>(
     []
   );
-  console.log("listQuestion", listQuestion);
   const [isLoadingQuestion, setIsLoadingQuestion] =
     React.useState<boolean>(false);
   const dispatch = useDispatch();
@@ -44,6 +43,20 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
     }
   }, [chooseChapter]);
 
+  const handleQuestionAdded = (newQuestion: IQuestionPayLoad) => {
+    setListQuestion(prevQuestions => [...prevQuestions, newQuestion]);
+  };
+
+  const handleQuestionDeleted = (deletedQuestionId: string) => {
+    setListQuestion(prevQuestions => prevQuestions.filter(q => q.id_question !== deletedQuestionId));
+  };
+
+  const onQuestionUpdated = (updatedQuestion: IQuestionPayLoad) => {
+    setListQuestion(prevQuestions => 
+      prevQuestions.map(q => q.id_question === updatedQuestion.id_question ? updatedQuestion : q)
+    );
+  };
+  
   const getDataQuestion = async () => {
     setIsLoadingQuestion(true);
     try {
@@ -162,7 +175,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
               {isLoadingQuestion ? (
                 <p>Đang tìm câu hỏi ...</p>
               ) : (
-                <Question listQuestion={listQuestion} />
+                <Question listQuestion={listQuestion} onQuestionDeleted={handleQuestionDeleted} onQuestionUpdated={onQuestionUpdated} />
               )}
             </div>
             <div className="flex justify-center mt-5 space-x-3">
@@ -195,6 +208,8 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
       <PopupQuestion
         open={showPopupQuestion}
         close={() => setShowPopupQuestion(false)}
+        chooseChapter = {chooseChapter}
+        onQuestionAdded={handleQuestionAdded}
       />
     </Modal>
   );
