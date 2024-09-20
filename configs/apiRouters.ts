@@ -19,6 +19,8 @@ export const apiRoutes = {
   
   getQuestionByIDQR: "/api/question/getQuestionByIDQR",
   addQuestion: "api/question/createQuestion",
+  updateQuestion: "api/question/updateQuestion",
+  deleteQuestion :"api/question/deleteQuestion",
 
   // post request
   getPost : "/api/manapost/getPostQuestion",

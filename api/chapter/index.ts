@@ -148,10 +148,9 @@ export const addQuestion = async (
   level_question: string,
   number_question: number,
   answers: { id_answer: string, answer_text: string }[], 
-  image_question?: File 
+  image_question?: any
 ) => {
   try {
-    // Khởi tạo FormData để thêm dữ liệu
     const formData = new FormData();
     formData.append("id_question", id_question);
     formData.append("id_question_query", id_question_query);
@@ -162,27 +161,78 @@ export const addQuestion = async (
     formData.append("number_question", number_question.toString());
     formData.append("slug", id_question);
 
-    // Thêm ảnh nếu có
     if (image_question) {
       formData.append("image_question", image_question);
     }
 
-    // Duyệt qua mảng các câu trả lời và thêm vào FormData
     answers.forEach((answer, index) => {
       formData.append(`answers[${index}][id_answer]`, answer.id_answer);
       formData.append(`answers[${index}][answer_text]`, answer.answer_text);
     });
 
-    // Gửi yêu cầu HTTP POST đến API
     const response = await axiosClient.post<IQuestionSuccessPayload>(
       apiRoutes.addQuestion,
       formData
     );
 
-    // Trả về phản hồi thành công
     return response.data;
   } catch (error) {
     console.error("Error adding question:", error);
     throw error;
   }
 }
+
+export const updateQuestion = async (
+  id_question: string,
+  id_question_query: string,
+  title: string,
+  description: string,
+  answer_correct: string,
+  level_question: string,
+  number_question: number,
+  answers: { id_answer: string; answer_text: string }[],
+  image_question?: File 
+) => {
+  try {
+    const formData = new FormData();
+    formData.append("id_question", id_question);
+    formData.append("id_question_query", id_question_query);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("answer_correct", answer_correct);
+    formData.append("level_question", level_question);
+    formData.append("number_question", number_question.toString());
+    formData.append("slug", id_question);
+
+    if (image_question) {
+      formData.append("image_question", image_question);
+    }
+
+    answers.forEach((answer, index) => {
+      formData.append(`answers[${index}][id_answer]`, answer.id_answer);
+      formData.append(`answers[${index}][answer_text]`, answer.answer_text);
+    });
+
+    const response = await axiosClient.post<IQuestionSuccessPayload>(
+      apiRoutes.updateQuestion,
+      formData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating question:", error);
+    throw error;
+  }
+};
+
+
+export const deleteQuestion = async (id_question: string) => {
+  try {
+    const data = {id_question} ;
+    const response = await axiosClient.post<IQuestionSuccessPayload>(apiRoutes.deleteQuestion,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
