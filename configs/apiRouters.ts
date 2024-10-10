@@ -2,6 +2,8 @@ export const apiRoutes = {
   authLogin: "/api/auth/adminLogin",
   authLogout: "/api/auth/logout",
   loginByToken: "/api/auth/checktoken",
+  getAllUsers: "/api/auth/getAllUsers",
+  deleteUserByProfileId: "/api/auth/deleteUserByProfileId",
   getClassRoom: "/api/classroom",
   addClass: "/api/classroom",
 
@@ -27,5 +29,7 @@ export const apiRoutes = {
   getPostById: "/api/manapost/getPostQuestionById",
 
   // comment request
-  getCommentsByPostId : "/api/manapost/getCommentPost"
+  getCommentsByPostId : "/api/manapost/getCommentPost",
+
+  chat: "/api/chat"
 };

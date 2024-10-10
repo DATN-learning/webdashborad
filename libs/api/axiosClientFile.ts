@@ -13,6 +13,9 @@ const config: AxiosRequestConfig = {
         encode: (string: string) => queryString.parse(string),
         serialize: (params: any): string => queryString.stringify(params || {}),
     },
+    headers: {
+        "Content-Type": "multipart/form-data" ,
+    },
     withCredentials: false,
     timeout: 1000 * 300,
 };

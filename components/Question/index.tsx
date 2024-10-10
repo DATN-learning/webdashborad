@@ -93,7 +93,7 @@ const Question: FC<IQuestionProps> = ({ listQuestion, onQuestionDeleted, onQuest
                   }}
                 />
                 {item.image_question && (
-                  <img src={item.image_question.url_image} alt="" className="w-1/2" />
+                  <img src={item.image_question[0]} alt="" className="w-1/2" />
                 )}
                 {!item.image_question && (
                   <Button className="bg-green-500 text-white">

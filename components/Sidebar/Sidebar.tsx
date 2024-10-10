@@ -21,7 +21,7 @@ const listLogoSideBar = [
     icon: <RxDashboard size={20} />,
   },
   {
-    link: "/customers",
+    link: "/managerProfile",
     icon: <RxPerson size={20} />,
   },
   {
