@@ -14,6 +14,7 @@ export const apiRoutes = {
 
   addChapter: "/api/classroom/createChapter",
   addLession: "/api/classroom/createLession",
+  addSlideLession: "/api/classroom/addSlideLession",
   deleteLession: "/api/classroom/deleteLession",
   updateLession: "/api/classroom/updateLession",
   editChapterByID: "/api/classroom/editChapterByID",

@@ -1,30 +1,44 @@
-import React from "react";
+import React, { useState } from 'react';
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 
-const Slide = () => {
-  return (
-    <div className="w-full">
-      <div className="grid grid-cols-3 gap-4">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
-          return (
-            <div
-              key={index}
-              className="flex justify-between flex-col
-            items-center border-[2px] border-gray-200 rounded-lg p-2 mb-4"
-            >
-              <img
-                src="https://i.pinimg.com/564x/3b/69/1c/3b691c83d1639c29d14f4986a65b2ff9.jpg"
-                className="rounded-lg object-cover"
-              />
-              <div className="">
-                <span className="font-bold">Chương 3.</span>
-                <span>Biểu thức chính quy và Văn phạm chính quy</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+// Import styles
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
+const PDFViewer: React.FC = () => {
+    const [pdfData, setPdfData] = useState<string | null>(null);
+
+    // Initialize the default layout plugin
+    const defaultLayout = defaultLayoutPlugin();
+
+    const onFileLoad = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                if (e.target && e.target.result) {
+                    setPdfData(e.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    return (
+        <>
+            <input type="file" accept=".pdf" onChange={onFileLoad} />
+
+            {pdfData && (
+                <div style={{ height: '750px' }}>
+                    {/* Use the Worker component to provide the correct worker URL */}
+                    <Worker workerUrl="/pdf.worker.min.js">
+                        <Viewer fileUrl={pdfData} plugins={[defaultLayout]} />
+                    </Worker>
+                </div>
+            )}
+        </>
+    );
 };
 
-export default Slide;
+export default PDFViewer;

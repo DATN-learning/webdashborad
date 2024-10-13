@@ -5,6 +5,7 @@ import {
   ILessionPayLoad,
   IUpdateChapterPayload,
 } from "@/interface/Class";
+import { IPdf } from "@/interface/Pdf";
 import { IQuestionSuccessPayload } from "@/interface/Question";
 import axiosClient from "@/libs/api/axiosClient";
 import axiosClientFile from "@/libs/api/axiosClientFile";
@@ -94,6 +95,25 @@ export const addLesson = async (
   return response;
 };
 
+export const addSlideLessions = async (
+  id_lesstion_chapter: string,
+  id_pdf: string,
+  slug: string,
+  pdf_file: string
+) => {
+  const formData = new FormData();
+  formData.append("id_lesstion_chapter",id_lesstion_chapter);
+  formData.append("id_pdf",id_pdf);
+  formData.append("slug",slug);
+  formData.append("pdf_file", pdf_file);
+
+  try{
+    const response = await axiosClientFile.post<IPdf>(apiRoutes.addSlideLession, formData);
+    return response;
+  }catch(error){
+    console.error(error);
+  }
+};
 
 export const deleteLess = async (id_lesstion_chapter: string) => {
   try {
