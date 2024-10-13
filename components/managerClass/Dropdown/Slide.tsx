@@ -1,44 +1,29 @@
-import React, { useState } from 'react';
-import { Viewer, Worker } from '@react-pdf-viewer/core';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import { addSlideLessions } from "@/api/chapter";
+import React from "react";
 
-// Import styles
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+const Slide = () => {
+  const [file, setFile] = React.useState<any>(null);
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    // const formData = new FormData();
+    // formData.append("file", file);
+    const res = addSlideLessions("1", "1", "1", file);
+    console.log(res);
+  };
 
-const PDFViewer: React.FC = () => {
-    const [pdfData, setPdfData] = useState<string | null>(null);
+  const handleFile = (e: any) => {
+    setFile(e.target.files[0]);
+    console.log(e.target.files[0]);
+  };
 
-    // Initialize the default layout plugin
-    const defaultLayout = defaultLayoutPlugin();
-
-    const onFileLoad = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e: ProgressEvent<FileReader>) => {
-                if (e.target && e.target.result) {
-                    setPdfData(e.target.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    return (
-        <>
-            <input type="file" accept=".pdf" onChange={onFileLoad} />
-
-            {pdfData && (
-                <div style={{ height: '750px' }}>
-                    {/* Use the Worker component to provide the correct worker URL */}
-                    <Worker workerUrl="/pdf.worker.min.js">
-                        <Viewer fileUrl={pdfData} plugins={[defaultLayout]} />
-                    </Worker>
-                </div>
-            )}
-        </>
-    );
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type="file" onChange={handleFile} accept=".pdf" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
 };
 
-export default PDFViewer;
+export default Slide;
