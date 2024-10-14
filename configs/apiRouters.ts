@@ -30,6 +30,7 @@ export const apiRoutes = {
   // post request
   getPost : "/api/manapost/getPostQuestion",
   getPostById: "/api/manapost/getPostQuestionById",
+  deleteCommentPost: "/api/manapost/deleteCommentPost",
 
   // comment request
   getCommentsByPostId : "/api/manapost/getCommentPost",
