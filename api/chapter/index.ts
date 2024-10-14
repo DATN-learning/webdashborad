@@ -5,7 +5,7 @@ import {
   ILessionPayLoad,
   IUpdateChapterPayload,
 } from "@/interface/Class";
-import { IPdf } from "@/interface/Pdf";
+import { IPdf, IPdfPayload } from "@/interface/Pdf";
 import { IQuestionSuccessPayload } from "@/interface/Question";
 import axiosClient from "@/libs/api/axiosClient";
 import axiosClientFile from "@/libs/api/axiosClientFile";
@@ -114,6 +114,29 @@ export const addSlideLessions = async (
     console.error(error);
   }
 };
+
+export const getSlideLession = async (id_lesstion_chapter: string) => {
+  try {
+    const data = {
+      id_lesstion_chapter
+    };
+    const response = await axiosClient.post<IPdfPayload>(apiRoutes.getSlideLession, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in getSlideLession:", error);
+    return null;
+  }
+};
+
+export const deleteSlideLession = async(id_pdf: string) => {
+  try {
+    const data = {id_pdf} ;
+    const response = await axiosClient.post<IPdfPayload>(apiRoutes.deleteSlideLession,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
 
 export const deleteLess = async (id_lesstion_chapter: string) => {
   try {

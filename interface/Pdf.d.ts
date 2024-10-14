@@ -5,3 +5,11 @@ export interface IPdf {
     slug: string,
     pdf_file: string 
 }
+
+export interface IPdfPayload{
+    status: boolean;
+    message: string;
+    data: {
+      pdfs: IPdf[];
+    };
+}
