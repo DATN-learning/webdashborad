@@ -59,6 +59,19 @@ const CommentPost = () => {
       content: "Bạn có chắc chắn muốn xóa bình luận này?",
       okText: "Xóa",
       cancelText: "Hủy",
+      okButtonProps: {
+        style: {
+          backgroundColor: 'red',  
+          borderColor: 'red',
+          color: 'white',
+        },
+      },
+      cancelButtonProps: {
+        style: {
+          backgroundColor: 'gray',
+          color: 'white', 
+        },
+      },
       onOk: async () => {
         try {
           const res = await deleteCommentPosts(comment_id);
@@ -71,7 +84,7 @@ const CommentPost = () => {
           console.log(comment_id)
         } catch (error) {
           console.error("Error deleting comment:", error);
-          toast.error("Có lỗi xảy ra khi xóa bình luận!"); // Thông báo lỗi
+          toast.error("Có lỗi xảy ra khi xóa bình luận!");
         }
       },
     });
@@ -99,7 +112,7 @@ const CommentPost = () => {
             <p>{item.body}</p>
             <p>{item.title}</p>
             <img
-            src="https://i.pinimg.com/564x/ab/ca/9b/abca9be563b4ca5760eeb795def1bffc.jpg"
+            src={item?.images[0].url_image}
             className="w-full rounded-md"
           />
           </div>
