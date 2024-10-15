@@ -8,8 +8,9 @@ const agent = new https.Agent({
 });
 
 const config: AxiosRequestConfig = {
-    //baseURL:    'http://10.50.5.222:8000',
-    baseURL:    'http://127.0.0.1:8000',
+    // baseURL:    'http://192.168.1.125:8000',
+    baseURL:    "http://127.0.0.1:8000",
+    // baseURL: configs.baseURL,
     paramsSerializer: {
         encode: (string: string) => queryString.parse(string),
         serialize: (params: any): string => queryString.stringify(params || {}),

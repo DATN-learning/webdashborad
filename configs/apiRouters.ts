@@ -2,6 +2,8 @@ export const apiRoutes = {
   authLogin: "/api/auth/adminLogin",
   authLogout: "/api/auth/logout",
   loginByToken: "/api/auth/checktoken",
+  getAllUsers: "/api/auth/getAllUsers",
+  deleteUserByProfileId: "/api/auth/deleteUserByProfileId",
   getClassRoom: "/api/classroom",
   addClass: "/api/classroom",
 
@@ -12,8 +14,11 @@ export const apiRoutes = {
 
   addChapter: "/api/classroom/createChapter",
   addLession: "/api/classroom/createLession",
-  deleteLession: "/api/classroom/deleteLession",
+  addSlideLession: "/api/classroom/addSlideLession",
+  getSlideLession: "/api/classroom/getSlideLession",
+  deleteSlideLession: "/api/classroom/deleteSlideLession",
   updateLession: "/api/classroom/updateLession",
+  deleteLession: "/api/classroom/deleteLession",
   editChapterByID: "/api/classroom/editChapterByID",
   deleteChapterByID: "/api/classroom/deleteChapterByID",
   
@@ -25,7 +30,10 @@ export const apiRoutes = {
   // post request
   getPost : "/api/manapost/getPostQuestion",
   getPostById: "/api/manapost/getPostQuestionById",
+  deleteCommentPost: "/api/manapost/deleteCommentPost",
 
   // comment request
-  getCommentsByPostId : "/api/manapost/getCommentPost"
+  getCommentsByPostId : "/api/manapost/getCommentPost",
+
+  chat: "/api/chat"
 };

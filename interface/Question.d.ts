@@ -12,7 +12,8 @@ export interface IQuestionPayLoad {
   number_question: number;
   created_at: string;
   updated_at: string;
-  image_question: IImage;
+  // imageQuestions: IImage[];
+  image_question: string[];
   answers: IAnswerPayLoad[];
   disable?: boolean;
 }

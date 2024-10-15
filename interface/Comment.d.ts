@@ -1,3 +1,4 @@
+import { IImage } from "./Image";
 import { IUserCreate } from "./Post";
 
 export interface IComment {
@@ -13,7 +14,7 @@ export interface IComment {
     notify : number;
     created_at: string;
     updated_at: string;
-    images : [];
+    images : IImage[];
     timeAgo: string;
     user_create: IUserCreate;
 }

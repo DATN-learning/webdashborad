@@ -5,8 +5,10 @@ import {
   ILessionPayLoad,
   IUpdateChapterPayload,
 } from "@/interface/Class";
+import { IPdf, IPdfPayload } from "@/interface/Pdf";
 import { IQuestionSuccessPayload } from "@/interface/Question";
 import axiosClient from "@/libs/api/axiosClient";
+import axiosClientFile from "@/libs/api/axiosClientFile";
 
 export const editChapter = async (subject_id: string): Promise<any> => {
   try {
@@ -93,6 +95,48 @@ export const addLesson = async (
   return response;
 };
 
+export const addSlideLessions = async (
+  id_lesstion_chapter: string,
+  id_pdf: string,
+  slug: string,
+  pdf_file: string
+) => {
+  const formData = new FormData();
+  formData.append("id_lesstion_chapter",id_lesstion_chapter);
+  formData.append("id_pdf",id_pdf);
+  formData.append("slug",slug);
+  formData.append("pdf_file", pdf_file);
+
+  try{
+    const response = await axiosClientFile.post<IPdf>(apiRoutes.addSlideLession, formData);
+    return response;
+  }catch(error){
+    console.error(error);
+  }
+};
+
+export const getSlideLession = async (id_lesstion_chapter: string) => {
+  try {
+    const data = {
+      id_lesstion_chapter
+    };
+    const response = await axiosClient.post<IPdfPayload>(apiRoutes.getSlideLession, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in getSlideLession:", error);
+    return null;
+  }
+};
+
+export const deleteSlideLession = async(id_pdf: string) => {
+  try {
+    const data = {id_pdf} ;
+    const response = await axiosClient.post<IPdfPayload>(apiRoutes.deleteSlideLession,data);
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
 
 export const deleteLess = async (id_lesstion_chapter: string) => {
   try {
@@ -147,7 +191,7 @@ export const addQuestion = async (
   answer_correct: string,
   level_question: string,
   number_question: number,
-  answers: { id_answer: string, answer_text: string }[], 
+  answers: { id_answer: string, answer_text: string }[],
   image_question?: any
 ) => {
   try {
@@ -170,16 +214,16 @@ export const addQuestion = async (
       formData.append(`answers[${index}][answer_text]`, answer.answer_text);
     });
 
-    const response = await axiosClient.post<IQuestionSuccessPayload>(
+    const response = await axiosClientFile.post<IQuestionSuccessPayload>(
       apiRoutes.addQuestion,
       formData
     );
-
     return response.data;
   } catch (error) {
     console.error("Error adding question:", error);
     throw error;
   }
+
 }
 
 export const updateQuestion = async (

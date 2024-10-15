@@ -27,9 +27,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
   const [nameChapter, setNameChapter] = React.useState<string>("");
   const [numberChapter, setNumberChapter] = React.useState<number>(0);
   const [urlImage, setUrlImage] = React.useState<string>("");
-  const [listQuestion, setListQuestion] = React.useState<IQuestionPayLoad[]>(
-    []
-  );
+  const [listQuestion, setListQuestion] = React.useState<IQuestionPayLoad[]>([]);
   const [isLoadingQuestion, setIsLoadingQuestion] =
     React.useState<boolean>(false);
   const dispatch = useDispatch();

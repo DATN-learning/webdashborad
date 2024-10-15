@@ -7,7 +7,8 @@ import { options } from "@/data/dropdown";
 import { useSelector } from "react-redux";
 import { getChooseSubject } from "@/redux/classRoom/selectors";
 import Chapter from "./Dropdown/Chapter";
-import { Slide } from "react-toastify";
+import Slide from "./Dropdown/Slide";
+
 const ChooseLesstion = () => {
   const router = useRouter();
   const [dataChapter, setDataChapter] = React.useState<IChapterSubject[]>([]);

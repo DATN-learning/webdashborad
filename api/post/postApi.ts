@@ -23,3 +23,13 @@ export const getCommentsByPostIdApi = async (
     );
     return response;
 }
+
+export const deleteCommentPosts = async (comment_id: string) => {
+    try {
+        const data = {comment_id} ;
+        const response = await axiosClient.post<IPostSuccessPayloadComment>(apiRoutes.deleteCommentPost,data);
+        return response;
+    } catch (error) {
+        return error;
+    }
+}

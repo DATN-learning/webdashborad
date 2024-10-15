@@ -1,38 +1,14 @@
-import { getCommentsByPostIdApi } from "@/api/post/postApi";
+import { deleteCommentPosts, getCommentsByPostIdApi } from "@/api/post/postApi";
 import { IComment } from "@/interface/Comment";
 import { getPostByIDSel } from "@/redux/post/selectors";
-import { Avatar, Card, Pagination, PaginationProps, Dropdown } from "antd";
+import { Avatar, Card, Pagination, PaginationProps, Dropdown, Modal } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MenuProps } from "antd";
 import { AiFillDelete, AiOutlineEdit } from "react-icons/ai";
+import { toast } from "react-toastify";
 const { Meta } = Card;
-const items: MenuProps["items"] = [
-  {
-    key: "1",
-    icon: <AiOutlineEdit size={20} />,
-    label: (
-      <div className="text-lg">
-        <span>Edit</span>
-      </div>
-    ),
-  },
-  {
-    key: "2",
-    icon: <AiFillDelete size={20} />,
-    label: (
-      <div
-        className="text-lg"
-        onClick={() => {
-          confirm();
-        }}
-      >
-        <span>Delete</span>
-      </div>
-    ),
-  },
-];
 
 const CommentPost = () => {
   const postId = useSelector(getPostByIDSel);
@@ -51,9 +27,69 @@ const CommentPost = () => {
     };
     getComment();
   }, [postId, page]);
+  
+  const getItems = (comment_id: string): MenuProps["items"] => [
+    {
+      key: "1",
+      icon: <AiOutlineEdit size={20} />,
+      label: (
+        <div className="text-lg">
+          <span>Edit</span>
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      icon: <AiFillDelete size={20} />,
+      label: (
+        <div
+          className="text-lg"
+          onClick={() => handleDeleteComment(comment_id)}>
+          <span>Delete</span>
+        </div>
+      ),
+    },
+  ];
   const onChange: PaginationProps["onChange"] = (pageNumber) => {
     setPage(pageNumber);
   };
+  const handleDeleteComment = async (comment_id: string) => {
+    Modal.confirm({
+      title: "Xác nhận xóa",
+      content: "Bạn có chắc chắn muốn xóa bình luận này?",
+      okText: "Xóa",
+      cancelText: "Hủy",
+      okButtonProps: {
+        style: {
+          backgroundColor: 'red',  
+          borderColor: 'red',
+          color: 'white',
+        },
+      },
+      cancelButtonProps: {
+        style: {
+          backgroundColor: 'gray',
+          color: 'white', 
+        },
+      },
+      onOk: async () => {
+        try {
+          const res = await deleteCommentPosts(comment_id);
+          if (res) {
+            toast.success("Xóa bình luận thành công!"); 
+            setComment((prev) => prev.filter((item) => item.comment_id !== comment_id)); 
+          } else {
+            toast.error("Xóa bình luận thất bại!"); 
+          }
+          console.log(comment_id)
+        } catch (error) {
+          console.error("Error deleting comment:", error);
+          toast.error("Có lỗi xảy ra khi xóa bình luận!");
+        }
+      },
+    });
+  };
+
   return (
     <div className="mt-3">
       {comment.map((item, index) => (
@@ -67,7 +103,7 @@ const CommentPost = () => {
               description={item?.timeAgo}
             />
             <div className="cursor-pointer text-xl">
-              <Dropdown menu={{ items }} placement="bottomLeft">
+            <Dropdown menu={{ items: getItems(item.comment_id) }} placement="bottomLeft">
                 <BsThreeDotsVertical />
               </Dropdown>
             </div>
@@ -75,10 +111,10 @@ const CommentPost = () => {
           <div className="space-y-2 mt-3">
             <p>{item.body}</p>
             <p>{item.title}</p>
-            {/* <img
-            src="https://i.pinimg.com/564x/ab/ca/9b/abca9be563b4ca5760eeb795def1bffc.jpg"
+            <img
+            src={item?.images[0].url_image}
             className="w-full rounded-md"
-          /> */}
+          />
           </div>
         </Card>
       ))}
