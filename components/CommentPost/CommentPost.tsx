@@ -112,7 +112,7 @@ const CommentPost = () => {
             <p>{item.body}</p>
             <p>{item.title}</p>
             <img
-            src={item?.images[0].url_image}
+            src={item?.images[0]?.url_image}
             className="w-full rounded-md"
           />
           </div>
