@@ -88,7 +88,7 @@ const PopupQuestion = ({ open, close, chooseChapter, onQuestionAdded }: IPopupQu
     const year = date.getFullYear();
     const dateChapter = `${day}${month}${year}`;
     const id_question = `chapter-${dateChapter}-${classRoom}-${question}`;
-    const id_question_query = `chapter-${dateChapter}-${classRoom}-${chooseChapter?.number_chapter}`;
+    const id_question_query = `${chooseChapter?.id_chapter_subject}`;
   
     const formattedAnswers = answers.map((item, index) => ({
       id: index + 1,

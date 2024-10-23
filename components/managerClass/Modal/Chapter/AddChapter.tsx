@@ -51,7 +51,7 @@ const AddChapter = ({
     const dateChapter = `${day}${month}${year}`;
     const number_chapter = value;
     const id_chapter_subject =
-      "chapter-" + dateChapter+ "-" + classRoom + "-" + value;
+      "chapter-" + dateChapter+ "-" + classRoom + "-" +selectSubject+ "-" + value;
     const subject_id = idSubject;
     const name_chapter_subject = nameChapter;
     const chapter_image = file;
