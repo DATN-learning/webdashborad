@@ -1,16 +1,19 @@
 import { Avatar, Button, Form, Input, Modal } from "antd";
 import React from "react";
-import { IChapterSubject } from "@/interface/Chapter";
+import { IChapterSubject, ILessionByChapterPayLoad } from "@/interface/Chapter";
 import Question from "../Question";
 import { toast } from "react-toastify";
 import { deleteChapter, getQuestionByID, updateChapter } from "@/api/chapter";
-import { useDispatch } from "react-redux";
-import { getSubjectClassRoomRequest } from "@/redux/classRoom/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { getSubjectClassRoomRequest,getSubjectClassRoomSuccess } from "@/redux/classRoom/actions";
 import { IQuestionPayLoad } from "@/interface/Question";
 import PopupQuestion from "./PopupQuestion";
+import { IClass, ISubject } from "@/interface/Class";
+import { chooseClassRoom, getChooseSubject } from "@/redux/classRoom/selectors";
 interface Props {
   open: boolean;
   onClose: () => void;
+  chooseLesstion: ILessionByChapterPayLoad | undefined;
   chooseChapter: IChapterSubject | undefined;
 }
 
@@ -21,19 +24,42 @@ interface DataChapter {
   numberLesson: number;
 }
 
-const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
+const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter,chooseLesstion }) => {
   const [showPopupQuestion, setShowPopupQuestion] =
     React.useState<boolean>(false);
+  const [IdChapterSubject, setIdChapterSubject] = React.useState<string>(chooseChapter?.id_chapter_subject ? chooseChapter?.id_chapter_subject : "");
   const [nameChapter, setNameChapter] = React.useState<string>("");
   const [numberChapter, setNumberChapter] = React.useState<number>(0);
   const [urlImage, setUrlImage] = React.useState<string>("");
   const [listQuestion, setListQuestion] = React.useState<IQuestionPayLoad[]>([]);
-  const [isLoadingQuestion, setIsLoadingQuestion] =
-    React.useState<boolean>(false);
+  const [isLoadingQuestion, setIsLoadingQuestion] = React.useState<boolean>(false);
   const dispatch = useDispatch();
   const [file, setFile] = React.useState<any>(null);
+
+  const handleSubmitUpdate = async () => {
+    if (nameChapter === "" || numberChapter <= 0) {
+      toast.error("Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
+
+    try {
+      const res = await updateChapter(IdChapterSubject, nameChapter, numberChapter, file);
+      if (res.status === 200 && res.data.status) {
+        dispatch(getSubjectClassRoomRequest());
+        toast.success("Cập nhật thành công");
+        onClose();
+      } else {
+        toast.error("Cập nhật thất bại");
+      }
+    } catch (error) {
+      toast.error("Cập nhật thất bại");
+      console.log("error", error);
+    }
+  };
+
   React.useEffect(() => {
     if (chooseChapter) {
+      setIdChapterSubject(chooseChapter.id_chapter_subject);
       setNameChapter(chooseChapter.name_chapter_subject);
       setNumberChapter(chooseChapter.number_chapter);
       setUrlImage(chooseChapter.chapter_image);
@@ -87,28 +113,6 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
       e.target.value = null;
     }
   };
-  const handleSubmit = async () => {
-    if (nameChapter == "" || numberChapter <= 0) {
-      toast.error("Vui lòng nhập đầy đủ thông tin");
-      return;
-    }
-    try {
-      const res = await updateChapter(
-        chooseChapter?.id_chapter_subject
-          ? chooseChapter?.id_chapter_subject
-          : "",
-        nameChapter,
-        numberChapter,
-        file
-      );
-      res.status === 200 && res.data.status
-        ? (dispatch(getSubjectClassRoomRequest()),
-          toast.success("Cập nhật thành công"))
-        : toast.error("Cập nhật thất bại");
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
 
   const handleDelete = async () => {
     try {
@@ -159,7 +163,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
             <input type="file" name="chapter_image" onChange={hanldeFile} />
             <div className="">
               <div className="text-center my-5">
-                <span>Câu hỏi bài tập {nameChapter}</span>
+                <span>Câu hỏi bài tập chương {nameChapter}</span>
               </div>
               <div className="my-2">
                 <Button
@@ -180,7 +184,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
               <Button
                 type="text"
                 className="bg-teal-400 text-white"
-                onClick={handleSubmit}
+                onClick={() => handleSubmitUpdate()}
               >
                 Chỉnh sửa
               </Button>
@@ -207,6 +211,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter }) => {
         open={showPopupQuestion}
         close={() => setShowPopupQuestion(false)}
         chooseChapter = {chooseChapter}
+        chooseLesstion={chooseLesstion}
         onQuestionAdded={handleQuestionAdded}
       />
     </Modal>

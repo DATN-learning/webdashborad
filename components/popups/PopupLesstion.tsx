@@ -2,9 +2,12 @@ import { IChapterSubject, ILessionByChapterPayLoad } from "@/interface/Chapter";
 import { Button, Form, Input, List, Modal, Upload } from "antd";
 import React from "react";
 import { toast } from "react-toastify";
-import { addSlideLessions, deleteLess, deleteSlideLession, getSlideLession, updateLess } from "@/api/chapter";
+import { addSlideLessions, deleteLess, deleteSlideLession, getQuestionByID, getSlideLession, updateLess } from "@/api/chapter";
 import { IPdf, IPdfPayload } from "@/interface/Pdf";
 import { MdDelete } from "react-icons/md";
+import PopupQuestion from "./PopupQuestion";
+import { IQuestionPayLoad } from "@/interface/Question";
+import Question from "../Question";
 
 interface LessonProps {
   open: boolean;
@@ -30,6 +33,9 @@ const PopupLesstion = ({
   const [isUploading, setIsUploading] = React.useState(false);
   const [lessonCount, setLessonCount] = React.useState(0);
   const [existingPdfs, setExistingPdfs] = React.useState<IPdf[]>([]);
+  const [showPopupQuestion, setShowPopupQuestion] = React.useState<boolean>(false);
+  const [listQuestion, setListQuestion] = React.useState<IQuestionPayLoad[]>([]);
+  const [isLoadingQuestion, setIsLoadingQuestion] = React.useState<boolean>(false);
 
   const handleUpdate = async () => {
     try {
@@ -72,6 +78,32 @@ const PopupLesstion = ({
       ...dataLesson,
       [e.target.name]: e.target.value,
     });
+  };
+
+  React.useEffect(() => {
+    if (chooseLesstion) {
+      getDataQuestion();
+    }
+  }, [chooseLesstion]);
+
+  const getDataQuestion = async () => {
+    setIsLoadingQuestion(true);
+    try {
+      const res = await getQuestionByID(
+        chooseLesstion?.id_lesstion_chapter
+          ? chooseLesstion?.id_lesstion_chapter
+          : ""
+      );
+      if (res.status === 200 && res.data.status) {
+        setListQuestion(res.data.data.question);
+        setIsLoadingQuestion(false);
+      } else {
+        setIsLoadingQuestion(false);
+        toast.error("Lấy dữ liệu thất bại");
+      }
+    } catch (error) {
+      toast.error("Lấy dữ liệu thất bại");
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,7 +179,21 @@ const PopupLesstion = ({
       }
     }
   };
-  
+
+  //
+  const handleQuestionAdded = (newQuestion: IQuestionPayLoad) => {
+    setListQuestion(prevQuestions => [...prevQuestions, newQuestion]);
+  };
+
+  const handleQuestionDeleted = (deletedQuestionId: string) => {
+    setListQuestion(prevQuestions => prevQuestions.filter(q => q.id_question !== deletedQuestionId));
+  };
+
+  const onQuestionUpdated = (updatedQuestion: IQuestionPayLoad) => {
+    setListQuestion(prevQuestions => 
+      prevQuestions.map(q => q.id_question === updatedQuestion.id_question ? updatedQuestion : q)
+    );
+  };
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -242,6 +288,33 @@ const PopupLesstion = ({
         ) : (
           <div className="text-gray-500">Không có PDF nào cho bài học này</div>
         )}
+        <div className="text-center my-5">
+          <span>Câu hỏi bài tập</span>
+        </div>
+        <div className="my-2">
+          <Button
+            type="text"
+            className="bg-teal-400 text-white"
+            onClick={() => setShowPopupQuestion(true)}
+          >
+            Thêm câu hỏi
+          </Button>
+        </div>
+        {isLoadingQuestion ? (
+          <p>Đang tìm câu hỏi ...</p>
+        ) : (
+          <Question listQuestion={listQuestion} onQuestionDeleted={handleQuestionDeleted} onQuestionUpdated={onQuestionUpdated} />
+        )}
+
+        <PopupQuestion
+          open={showPopupQuestion}
+          close={() => setShowPopupQuestion(false)}
+          chooseChapter={chooseChapter}
+          chooseLesstion={chooseLesstion}
+          onQuestionAdded={handleQuestionAdded}
+        />
+
+
         <div className="flex justify-center mt-5 gap-3">
           <Button className="bg-teal-400" onClick={handleUpdate}>
             Chỉnh sửa

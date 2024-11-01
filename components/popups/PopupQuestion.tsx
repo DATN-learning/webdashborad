@@ -4,13 +4,14 @@ import { toast } from "react-toastify";
 import { addQuestion } from "@/api/chapter";
 import { useSelector } from "react-redux";
 import { chooseClassRoom, getChooseSubject } from "@/redux/classRoom/selectors";
-import { IChapterSubject } from "@/interface/Chapter";
+import { IChapterSubject, ILessionByChapterPayLoad } from "@/interface/Chapter";
 import { IQuestionPayLoad } from "@/interface/Question";
 import { IImage } from "@/interface/Image";
 
 interface IPopupQuestion {
   open: boolean;
   close: () => void;
+  chooseLesstion: ILessionByChapterPayLoad | undefined;
   chooseChapter: IChapterSubject | undefined;
   onQuestionAdded: (newQuestion: IQuestionPayLoad) => void;
 }
@@ -19,7 +20,7 @@ interface IAnswers {
   image: string;
 }
 
-const PopupQuestion = ({ open, close, chooseChapter, onQuestionAdded }: IPopupQuestion) => {
+const PopupQuestion = ({ open, close, chooseChapter, chooseLesstion,onQuestionAdded }: IPopupQuestion) => {
   const [imageAnswer, setImageAnswer] = React.useState<string>("");
   const [imageQuestion, setImageQuestion] = React.useState<string>("");
   const fileInputQuestionRef = React.useRef<HTMLInputElement | null>(null);
@@ -87,9 +88,11 @@ const PopupQuestion = ({ open, close, chooseChapter, onQuestionAdded }: IPopupQu
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dateChapter = `${day}${month}${year}`;
-    const id_question = `chapter-${dateChapter}-${classRoom}-${question}`;
-    const id_question_query = `${chooseChapter?.id_chapter_subject}`;
-  
+    const id_question = chooseLesstion?.id_lesstion_chapter && chooseLesstion?.id_lesstion_chapter.length > 0  ? `lession-${dateChapter}-${classRoom}-${question}` : `chapter-${dateChapter}-${classRoom}-${question}` ;
+    const id_question_query = chooseLesstion?.id_lesstion_chapter && chooseLesstion?.id_lesstion_chapter.length > 0 
+      ? chooseLesstion?.id_lesstion_chapter
+      : chooseChapter?.id_chapter_subject ?? "";
+
     const formattedAnswers = answers.map((item, index) => ({
       id: index + 1,
       id_answer: `_${index}`,
@@ -118,7 +121,7 @@ const PopupQuestion = ({ open, close, chooseChapter, onQuestionAdded }: IPopupQu
     try {
       await addQuestion(
         newQuestion.id_question,
-        newQuestion.id_question_query,
+        newQuestion.id_question_query as string,
         newQuestion.title,
         newQuestion.description,
         newQuestion.answer_correct,

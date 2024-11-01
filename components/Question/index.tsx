@@ -33,7 +33,7 @@ const Question: FC<IQuestionProps> = ({ listQuestion, onQuestionDeleted, onQuest
         title: title || question.title, 
       };
 
-      await updateQuestion(
+      const res = await updateQuestion(
         updatedQuestion.id_question,
         updatedQuestion.id_question_query,
         updatedQuestion.title,
@@ -44,6 +44,7 @@ const Question: FC<IQuestionProps> = ({ listQuestion, onQuestionDeleted, onQuest
         updatedQuestion.answers
         // Có thể thêm hình ảnh nếu cần: updatedQuestion.imageQuestions[0] || ""
       );
+      console.log(res.data)
 
       toast.success("Cập nhật câu hỏi thành công!");
       onQuestionUpdated(updatedQuestion);

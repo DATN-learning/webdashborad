@@ -122,6 +122,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             return true;
           } else {
             console.log(res.data.message);
+            setIsLoadingLogin(false);
+            router.push("/auth/login");
             return false;
           }
         } else {
