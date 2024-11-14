@@ -35,5 +35,8 @@ export const apiRoutes = {
   // comment request
   getCommentsByPostId : "/api/manapost/getCommentPost",
 
-  chat: "/api/chat"
+  chat: "/api/chat",
+
+  // rating
+  getAllRating: "/api/rating/getAllRating"
 };

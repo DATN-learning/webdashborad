@@ -35,6 +35,7 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter,chooseLess
   const [isLoadingQuestion, setIsLoadingQuestion] = React.useState<boolean>(false);
   const dispatch = useDispatch();
   const [file, setFile] = React.useState<any>(null);
+  const [openModal,setOpenModal] = React.useState(false);
 
   const handleSubmitUpdate = async () => {
     if (nameChapter === "" || numberChapter <= 0) {
@@ -126,7 +127,12 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter,chooseLess
           toast.success("Xóa thành công"))
         : toast.error("Xóa thất bại");
     } catch (error) {}
+    setOpenModal(true);
   };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  }
 
   return (
     <Modal open={open} onCancel={onClose} footer={null} width={800} centered>
@@ -199,10 +205,25 @@ const PopupChapter: React.FC<Props> = ({ open, onClose, chooseChapter,chooseLess
                 type="primary"
                 danger
                 className="text-white"
-                onClick={handleDelete}
+                onClick={handleOpenModal}
               >
                 Xóa
               </Button>
+              <Modal
+                open={openModal}
+                onCancel={() => setOpenModal(false)}
+                footer={[
+                  <Button key="cancel" onClick={() => setOpenModal(false)}>
+                    Hủy
+                  </Button>,
+                  <Button key="confirm" type="primary" danger onClick={handleDelete}>
+                    Xác nhận
+                  </Button>,
+                ]}
+                centered
+              >
+                <p>Bạn có chắc chắn muốn xóa chương này không?</p>
+              </Modal>
             </div>
           </Form>
         </div>
